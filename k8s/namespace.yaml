@@ -1,0 +1,7 @@
+# A namespace is a separate "folder" in the cluster for all TriageBot objects.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: triagebot
+  labels:
+    app.kubernetes.io/name: triagebot

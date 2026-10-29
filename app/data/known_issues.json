@@ -1,0 +1,102 @@
+[
+  {
+    "id": "BUG-101",
+    "title": "Login fails with 'invalid token' after password reset",
+    "component": "auth",
+    "status": "fixed",
+    "severity": "S2",
+    "keywords": ["login", "password", "reset", "token", "invalid", "sign in"],
+    "description": "Users who reset their password are logged out and see 'invalid token' on the next login attempt. Old refresh tokens were not cleared.",
+    "resolution": "Fixed in 2.3.0 by clearing refresh tokens on password reset. Ask the user to update the app."
+  },
+  {
+    "id": "BUG-104",
+    "title": "Android app crashes when uploading large profile photo",
+    "component": "media-upload",
+    "status": "open",
+    "severity": "S2",
+    "keywords": ["android", "crash", "upload", "photo", "image", "profile", "large", "mb", "memory"],
+    "description": "Uploading a JPEG or PNG larger than about 5 MB from the gallery crashes the Android app with OutOfMemoryError. The image is decoded at full size before compression.",
+    "resolution": "Open. Fix planned: downscale the image before upload. Workaround: crop the photo first."
+  },
+  {
+    "id": "BUG-109",
+    "title": "Push notifications arrive twice on iOS",
+    "component": "notifications",
+    "status": "fixed",
+    "severity": "S3",
+    "keywords": ["notification", "push", "duplicate", "twice", "ios", "iphone"],
+    "description": "Every push notification is shown two times on iOS 17 because the device token is registered twice after an app update.",
+    "resolution": "Fixed in 2.2.4 by de-duplicating device tokens on the server."
+  },
+  {
+    "id": "BUG-112",
+    "title": "Timetable shows wrong times after daylight saving change",
+    "component": "timetable",
+    "status": "fixed",
+    "severity": "S3",
+    "keywords": ["timetable", "time", "timezone", "daylight", "schedule", "class", "wrong", "hour"],
+    "description": "Lecture times are shifted by one hour for students whose phone timezone differs from the campus timezone.",
+    "resolution": "Fixed in 2.3.0. Times are now stored in UTC and shown in the campus timezone."
+  },
+  {
+    "id": "BUG-115",
+    "title": "Search returns no results for names with accents",
+    "component": "search",
+    "status": "open",
+    "severity": "S3",
+    "keywords": ["search", "accent", "unicode", "name", "results", "empty", "special characters"],
+    "description": "Searching for a classmate named 'Jose' does not find 'José'. The search index does not normalise accented characters.",
+    "resolution": "Open. Fix planned: normalise text to ASCII before indexing."
+  },
+  {
+    "id": "BUG-118",
+    "title": "Web dashboard is blank in Safari",
+    "component": "web-ui",
+    "status": "fixed",
+    "severity": "S2",
+    "keywords": ["web", "dashboard", "blank", "safari", "white screen", "browser", "javascript"],
+    "description": "The student dashboard shows a white screen in Safari 16 because of an unsupported JavaScript regex feature.",
+    "resolution": "Fixed in web release 5.1 by replacing the regex."
+  },
+  {
+    "id": "BUG-121",
+    "title": "Assignment PDF upload stuck at 99 percent",
+    "component": "media-upload",
+    "status": "open",
+    "severity": "S2",
+    "keywords": ["upload", "pdf", "assignment", "stuck", "progress", "99", "file", "timeout"],
+    "description": "Uploading assignment PDFs above 20 MB on slow networks stays at 99 percent and never finishes. The server request times out after 30 seconds.",
+    "resolution": "Open. Fix planned: chunked uploads. Workaround: compress the PDF below 20 MB."
+  },
+  {
+    "id": "BUG-124",
+    "title": "Attendance QR code scanner does not open camera",
+    "component": "attendance",
+    "status": "open",
+    "severity": "S1",
+    "keywords": ["attendance", "qr", "camera", "scanner", "permission", "black screen"],
+    "description": "On some Android 14 phones the QR attendance scanner shows a black screen because camera permission is requested after the camera starts.",
+    "resolution": "Open. Hotfix in progress. Students cannot mark attendance, so this is critical."
+  },
+  {
+    "id": "BUG-127",
+    "title": "Dark mode makes timetable text unreadable",
+    "component": "timetable",
+    "status": "open",
+    "severity": "S4",
+    "keywords": ["dark mode", "theme", "text", "unreadable", "contrast", "colour", "color"],
+    "description": "In dark mode the timetable uses dark grey text on a black background.",
+    "resolution": "Open. Low priority UI fix: use theme text colour."
+  },
+  {
+    "id": "BUG-130",
+    "title": "App logs out every time it is closed",
+    "component": "auth",
+    "status": "open",
+    "severity": "S3",
+    "keywords": ["logout", "logged out", "session", "close", "remember me", "login"],
+    "description": "The 'remember me' option is ignored and users must log in again every time they reopen the app.",
+    "resolution": "Open. Session token is saved in memory instead of secure storage."
+  }
+]

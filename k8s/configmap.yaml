@@ -1,0 +1,11 @@
+# Non-secret settings. Safe to commit and to show in "kubectl describe".
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: triagebot-config
+  namespace: triagebot
+data:
+  MODEL_PROVIDER: "groq"            # or "google"
+  GROQ_MODEL: "openai/gpt-oss-20b"
+  GEMINI_MODEL: "gemini-flash-latest"
+  REQUEST_TIMEOUT: "90"

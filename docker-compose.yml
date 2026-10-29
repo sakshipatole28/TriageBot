@@ -1,0 +1,55 @@
+# Runs TriageBot as two containers on one private network:
+#   api -> FastAPI + agents (port 8000)
+#   ui  -> Streamlit page that calls the api over the network (port 8501)
+# Start:  docker compose up -d --build
+# Check:  docker compose ps
+# Stop:   docker compose down
+
+services:
+  api:
+    build:
+      context: .
+      network: host        # build with the host's network (avoids pip timeouts on Docker's bridge)
+    image: triagebot:1.0
+    container_name: triagebot-api
+    # API keys are read from .env on the host (not baked into the image).
+    # required: false lets the stack start without .env (then /triage returns 503).
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "8000:8000"        # host:container
+    volumes:
+      # Mount the issue tracker data read-only. Edit the JSON on the host and the
+      # tools see the change on the next request, no rebuild needed.
+      - ./app/data:/app/app/data:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4)"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+
+  ui:
+    build:
+      context: .
+      network: host
+    image: triagebot:1.0      # same image, different start command
+    container_name: triagebot-ui
+    command: ["streamlit", "run", "streamlit_app.py", "--server.address=0.0.0.0", "--server.port=8501"]
+    environment:
+      # "api" is the service name above; compose's DNS turns it into the api container's IP.
+      API_URL: http://api:8000
+    ports:
+      - "8501:8501"
+    depends_on:
+      api:
+        condition: service_healthy   # wait until the api passes its healthcheck
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8501/_stcore/health', timeout=4)"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped

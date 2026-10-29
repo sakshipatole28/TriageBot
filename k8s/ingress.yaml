@@ -1,0 +1,23 @@
+# Exposes the Service to the outside world at http://triagebot.local (needs an ingress controller,
+# e.g. "minikube addons enable ingress", and a hosts-file entry pointing triagebot.local to the cluster IP).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: triagebot-ingress
+  namespace: triagebot
+  annotations:
+    # Three LLM calls can take a while; do not cut the request off after the default 60s.
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: triagebot.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: triagebot-api
+                port:
+                  name: http

@@ -1,0 +1,82 @@
+# GitHub Actions CI/CD. On every push / pull request:
+#   1. test    -> run pytest (LLM mocked, no key needed)
+#   2. deploy  -> build the image, check the container answers /health,
+#                 push it to GitHub Container Registry (main branch only),
+#                 then deploy it to a real Kubernetes cluster (kind) inside the runner
+#                 and check the deployed pods answer /health.
+name: CI/CD
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+  packages: write                   # lets GITHUB_TOKEN push to ghcr.io
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11 (same as the Docker image)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests (no API key needed, the LLM is mocked)
+        run: pytest -v
+
+  deploy:
+    needs: test                     # only build and deploy if the tests passed
+    runs-on: ubuntu-latest
+    env:
+      IMAGE: triagebot:${{ github.sha }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t "$IMAGE" .
+
+      - name: Run container and check /health
+        run: |
+          docker run -d --name triagebot-ci -p 8000:8000 "$IMAGE"
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:8000/health; then echo; echo "Health check passed"; exit 0; fi
+            sleep 2
+          done
+          echo "Health check failed"; docker logs triagebot-ci; exit 1
+
+      - name: Remove test container
+        if: always()
+        run: docker rm -f triagebot-ci || true
+
+      - name: Push image to GitHub Container Registry
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          REPO="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/triagebot"     # registry names must be lowercase
+          docker tag "$IMAGE" "$REPO:${{ github.sha }}"
+          docker tag "$IMAGE" "$REPO:latest"
+          docker push "$REPO:${{ github.sha }}"
+          docker push "$REPO:latest"
+
+      - name: Create Kubernetes cluster (kind)
+        uses: helm/kind-action@v1
+        with:
+          cluster_name: triagebot
+          config: k8s/kind-cluster.yaml
+
+      - name: Deploy to Kubernetes and check /health
+        env:
+          # Repository secret (Settings > Secrets and variables > Actions). Optional:
+          # without it the pods still start and /health passes; /triage would return 503.
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: ./scripts/deploy-k8s.sh "$IMAGE"

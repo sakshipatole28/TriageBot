@@ -1,0 +1,37 @@
+{
+  "auth": {
+    "team": "Identity Team",
+    "contact": "#team-identity",
+    "description": "Login, logout, password reset, sessions and tokens."
+  },
+  "media-upload": {
+    "team": "Media Team",
+    "contact": "#team-media",
+    "description": "Profile photos, assignment PDFs and every other file upload."
+  },
+  "notifications": {
+    "team": "Engagement Team",
+    "contact": "#team-engagement",
+    "description": "Push notifications, email alerts and reminders."
+  },
+  "timetable": {
+    "team": "Academics Team",
+    "contact": "#team-academics",
+    "description": "Class timetable, timezones and calendar views."
+  },
+  "search": {
+    "team": "Discovery Team",
+    "contact": "#team-discovery",
+    "description": "Searching students, courses and notices."
+  },
+  "web-ui": {
+    "team": "Web Team",
+    "contact": "#team-web",
+    "description": "The browser dashboard and all web pages."
+  },
+  "attendance": {
+    "team": "Academics Team",
+    "contact": "#team-academics",
+    "description": "QR code attendance scanner and attendance reports."
+  }
+}

@@ -1,0 +1,37 @@
+# Everything listed here is NOT sent to the Docker build, so it can never end up in the image.
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python virtual environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Git, CI and editor metadata
+.git/
+.gitignore
+.github/
+Jenkinsfile
+.vscode/
+.idea/
+
+# Not needed to run the app
+tests/
+k8s/
+docs/
+*.md
+*.pdf
+*.docx
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# Deployment helpers (not needed inside the image)
+scripts/

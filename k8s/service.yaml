@@ -1,0 +1,16 @@
+# A stable address that load-balances over the ready pods.
+# Inside the cluster: triagebot-api.triagebot.svc. From the host: http://localhost:30080 (NodePort).
+apiVersion: v1
+kind: Service
+metadata:
+  name: triagebot-api
+  namespace: triagebot
+spec:
+  type: NodePort
+  selector:
+    app: triagebot-api              # send traffic to pods with this label
+  ports:
+    - name: http
+      port: 80                      # port of the Service
+      targetPort: http              # containerPort 8000 in the pod
+      nodePort: 30080               # opened on the node; kind maps it to the host (k8s/kind-cluster.yaml)

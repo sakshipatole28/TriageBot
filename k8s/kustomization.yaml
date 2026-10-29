@@ -1,0 +1,11 @@
+# Lets you apply everything in the right order with one command:  kubectl apply -k k8s/
+# secret.yaml is NOT listed: the pipelines create the real Secret from their credentials,
+# so applying this folder never overwrites the real API keys with placeholders.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml

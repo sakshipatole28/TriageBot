@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TriageBot</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>TriageBot</h1>
+      <p class="muted">Multi-agent bug triage for the CampusConnect app</p>
+    </div>
+    <div class="status" id="status"><span class="dot"></span><span id="statusText">Checking backend...</span></div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>New bug report</h2>
+      <p class="muted">Paste a bug report. Three agents will analyse it, look for duplicates and triage it.</p>
+
+      <div class="examples">
+        <button type="button" class="chip" data-example="The Android app crashes as soon as I try to upload my profile photo. The photo is about 8 MB from my phone camera. App version 2.3.1 on a Samsung A52.">Crash on photo upload</button>
+        <button type="button" class="chip" data-example="Since this morning the attendance QR scanner just shows a black screen on my Pixel 8 (Android 14). Nobody in my class can mark attendance.">QR scanner black screen</button>
+        <button type="button" class="chip" data-example="On the web dashboard, clicking Export timetable to PDF downloads an empty file in Chrome on Windows 11.">Empty timetable export</button>
+      </div>
+
+      <form id="triageForm">
+        <label for="issueInput">Bug report</label>
+        <textarea id="issueInput" rows="6" maxlength="4000" placeholder="What happened? Where? How can we reproduce it?"></textarea>
+        <div class="row">
+          <span class="muted" id="charCount">0 / 4000</span>
+          <button type="submit" id="submitBtn">Triage this bug</button>
+        </div>
+      </form>
+
+      <ol class="pipeline" id="pipeline">
+        <li data-step="0"><strong>Issue Analyst</strong><span>Structures the report and guesses the component</span></li>
+        <li data-step="1"><strong>Duplicate Investigator</strong><span>Calls search_known_issues and get_component_owner</span></li>
+        <li data-step="2"><strong>Triage Lead</strong><span>Decides severity, priority, team and next steps</span></li>
+      </ol>
+    </section>
+
+    <section class="card hidden" id="resultCard">
+      <h2>Triage decision</h2>
+      <div class="badges" id="badges"></div>
+      <div class="meta" id="meta"></div>
+      <div class="report" id="report"></div>
+    </section>
+
+    <section class="card error hidden" id="errorCard"></section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

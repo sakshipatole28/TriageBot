@@ -1,0 +1,122 @@
+/* TriageBot styles. Colours are variables so dark mode only swaps the values. */
+:root {
+  --bg: #f5f6f8;
+  --card: #ffffff;
+  --text: #1c2330;
+  --muted: #5d6778;
+  --border: #dde1e7;
+  --accent: #2f6fde;
+  --accent-text: #ffffff;
+  --ok: #1f8a4c;
+  --bad: #c43d3d;
+  --chip: #eef2f8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12151b;
+    --card: #1b2029;
+    --text: #e6e9ef;
+    --muted: #9aa3b2;
+    --border: #2d3441;
+    --accent: #5b8ff0;
+    --chip: #252c38;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px max(16px, calc((100% - 880px) / 2));
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+}
+.topbar h1 { margin: 0; font-size: 1.4rem; }
+.topbar p { margin: 0; }
+
+main { max-width: 880px; margin: 0 auto; padding: 16px; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.card h2 { margin: 0 0 4px; font-size: 1.15rem; }
+.muted { color: var(--muted); font-size: 0.9rem; }
+.hidden { display: none; }
+.error { border-color: var(--bad); color: var(--bad); }
+
+.status { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--muted); }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); }
+.status.ok .dot { background: var(--ok); }
+.status.bad .dot { background: var(--bad); }
+
+.examples { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.chip {
+  border: 1px solid var(--border);
+  background: var(--chip);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+label { display: block; font-weight: 600; margin-bottom: 6px; }
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  resize: vertical;
+}
+.row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; gap: 12px; }
+
+button[type="submit"] {
+  background: var(--accent);
+  color: var(--accent-text);
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+button[disabled] { opacity: 0.6; cursor: wait; }
+
+.pipeline { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 8px; }
+.pipeline li {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+.pipeline li span { color: var(--muted); font-size: 0.85rem; }
+.pipeline li.active { border-left-color: var(--accent); }
+.pipeline li.done { border-left-color: var(--ok); }
+
+.badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.badge { border-radius: 6px; padding: 4px 10px; font-weight: 600; background: var(--chip); }
+.meta { font-size: 0.9rem; color: var(--muted); margin-bottom: 12px; }
+.report { border-top: 1px solid var(--border); padding-top: 8px; overflow-wrap: anywhere; }
+.report h3 { font-size: 1rem; margin: 16px 0 4px; }
+.report code { background: var(--chip); padding: 1px 4px; border-radius: 4px; }

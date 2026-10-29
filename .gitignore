@@ -1,0 +1,23 @@
+# Secrets: real API keys live only in .env
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Test output
+.pytest_cache/
+.coverage
+htmlcov/
+test-results.xml
+
+# Editors / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
